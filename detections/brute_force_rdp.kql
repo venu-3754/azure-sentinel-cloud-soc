@@ -1,0 +1,29 @@
+// =========================================================================
+// Title: High-Volume RDP Brute Force Detection
+// Severity: High
+// Tactic: Credential Access
+// Technique: Brute Force: Password Guessing (T1110.001)
+// Data Source: Windows Security Events (EventID 4625) via Azure Monitor Agent
+// Description: Detects multiple failed remote logon attempts (RDP / Network)
+//              exceeding a baseline threshold within a 5-minute rolling window.
+// =========================================================================
+
+SecurityEvent
+| where TimeGenerated >= ago(1h)
+| where EventID == 4625 // An account failed to log on
+| where LogonType in (3, 10) // 3 = Network (SMB), 10 = RemoteInteractive (RDP)
+| where isnotempty(IpAddress) and IpAddress !in ("-", "127.0.0.1", "::1")
+| summarize 
+    FailedAttempts = count(),
+    StartTime = min(TimeGenerated),
+    EndTime = max(TimeGenerated),
+    TargetedAccounts = make_set(TargetAccount, 10),
+    SubStatusList = make_set(SubStatus, 5)
+    by Computer, IpAddress, bin(TimeGenerated, 5m)
+| where FailedAttempts >= 5
+| extend 
+    AccountCustomEntity = tostring(TargetedAccounts[0]),
+    IPCustomEntity = IpAddress,
+    HostCustomEntity = Computer
+| project StartTime, EndTime, HostCustomEntity, IPCustomEntity, AccountCustomEntity, FailedAttempts, TargetedAccounts, SubStatusList
+| sort by FailedAttempts desc
