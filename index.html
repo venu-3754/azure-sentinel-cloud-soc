@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en" class="dark scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Microsoft Sentinel Cloud SOC &amp; Detection Engineering Lab | Venu Portfolio</title>
+  <meta name="description" content="End-to-end Cloud Security Operations Center (SOC) lab with Microsoft Sentinel, KQL detections, Sysmon telemetry, and SOAR automation.">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            azure: {
+              50: '#f0f9ff',
+              500: '#0078d4',
+              600: '#0284c7',
+              700: '#0369a1',
+            },
+            soc: {
+              dark: '#0b0f19',
+              card: '#111827',
+              border: '#1f2937',
+              accent: '#38bdf8'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <!-- Lucide Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    @keyframes pulseGlow {
+      0%, 100% { opacity: 1; filter: drop-shadow(0 0 12px rgba(239, 68, 68, 0.6)); }
+      50% { opacity: 0.6; filter: drop-shadow(0 0 4px rgba(239, 68, 68, 0.2)); }
+    }
+    .pulse-danger { animation: pulseGlow 2.5s infinite; }
+  </style>
+</head>
+<body class="bg-[#0b0f19] text-slate-100 font-sans antialiased min-h-screen">
+
+  <!-- Navigation Bar -->
+  <nav class="sticky top-0 z-50 backdrop-blur-md bg-[#0b0f19]/80 border-b border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <span class="flex h-3 w-3 relative">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+        </span>
+        <span class="font-bold text-lg text-white tracking-wide flex items-center gap-2">
+          <i class="fa-solid fa-shield-halved text-sky-400"></i> Cloud SOC Lab
+        </span>
+        <span class="hidden sm:inline-block bg-sky-950/80 text-sky-400 text-xs px-2.5 py-0.5 rounded-full border border-sky-800 font-mono">
+          Microsoft Sentinel SIEM
+        </span>
+      </div>
+      <div class="flex items-center space-x-4 text-sm font-medium">
+        <a href="#dashboard" class="text-slate-300 hover:text-sky-400 transition">Dashboard</a>
+        <a href="#detections" class="text-slate-300 hover:text-sky-400 transition">KQL Rules</a>
+        <a href="#screenshots" class="text-slate-300 hover:text-sky-400 transition">Screenshots</a>
+        <a href="#investigation" class="text-slate-300 hover:text-sky-400 transition">Incident Report</a>
+        <a href="https://github.com/venu-3754/azure-sentinel-cloud-soc" target="_blank" class="bg-sky-600 hover:bg-sky-500 text-white px-3.5 py-1.5 rounded-lg flex items-center gap-2 transition font-semibold text-xs shadow-lg shadow-sky-600/30">
+          <i class="fa-brands fa-github text-sm"></i> GitHub Repo
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <header class="relative overflow-hidden py-16 border-b border-slate-800/80 bg-gradient-to-b from-[#111827] to-[#0b0f19]">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="inline-flex items-center gap-2 bg-slate-800/80 text-slate-300 border border-slate-700 px-3 py-1 rounded-full text-xs font-mono mb-6">
+        <span class="text-emerald-400 font-bold">● LIVE DEMO &amp; PORTFOLIO</span>
+        <span>•</span>
+        <span>Target: Tier 1/2 SOC Analyst</span>
+      </div>
+      
+      <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white max-w-4xl">
+        Cloud-Native SIEM &amp; <span class="text-transparent bg-clip-text bg-gradient-to-r from-sky-400 via-blue-500 to-indigo-400">Detection Engineering Lab</span>
+      </h1>
+      
+      <p class="mt-6 text-lg text-slate-400 max-w-3xl leading-relaxed">
+        An enterprise security operations lab built inside Microsoft Azure. Telemetry ingestion via Azure Monitor Agent &amp; Sysmon, real-world adversary simulation (LOLBAS, Credential Access), custom KQL analytics rules mapped to MITRE ATT&amp;CK, and automated SOAR threat enrichment.
+      </p>
+
+      <!-- Badges Row -->
+      <div class="mt-8 flex flex-wrap gap-2.5 font-mono text-xs">
+        <span class="bg-blue-950/80 text-blue-400 border border-blue-800 px-3 py-1 rounded-md">SIEM: Microsoft Sentinel</span>
+        <span class="bg-amber-950/80 text-amber-400 border border-amber-800 px-3 py-1 rounded-md">Query: KQL (Kusto)</span>
+        <span class="bg-red-950/80 text-red-400 border border-red-800 px-3 py-1 rounded-md">Framework: MITRE ATT&amp;CK</span>
+        <span class="bg-emerald-950/80 text-emerald-400 border border-emerald-800 px-3 py-1 rounded-md">SOAR: Azure Logic Apps</span>
+        <span class="bg-purple-950/80 text-purple-400 border border-purple-800 px-3 py-1 rounded-md">EDR: Microsoft Sysmon</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Section 1: Interactive Live SOC Console -->
+  <section id="dashboard" class="py-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between mb-6">
+      <div>
+        <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+          <i class="fa-solid fa-desktop text-sky-400"></i> Sentinel Security Incidents Console
+        </h2>
+        <p class="text-sm text-slate-400">Click any incident row below to simulate live analyst triage and review incident telemetry.</p>
+      </div>
+      <span class="text-xs font-mono text-slate-400 bg-slate-800/80 px-3 py-1.5 rounded-lg border border-slate-700">
+        Workspace: <span class="text-sky-300">law-sentinel-soc</span>
+      </span>
+    </div>
+
+    <!-- KPI Metric Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+      <div class="bg-slate-900/90 border border-slate-800 p-5 rounded-xl shadow-lg">
+        <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Total Incidents (24h)</div>
+        <div class="mt-2 flex items-baseline justify-between">
+          <span class="text-3xl font-extrabold text-white">18</span>
+          <span class="text-xs text-emerald-400 font-medium font-mono">▲ 4 new today</span>
+        </div>
+      </div>
+      
+      <div class="bg-slate-900/90 border border-red-900/50 p-5 rounded-xl shadow-lg relative overflow-hidden">
+        <div class="text-xs font-semibold text-red-300 uppercase tracking-wider">High Severity Alerts</div>
+        <div class="mt-2 flex items-baseline justify-between">
+          <span class="text-3xl font-extrabold text-red-500">3</span>
+          <span class="text-xs text-red-400 font-medium font-mono">Action required</span>
+        </div>
+      </div>
+
+      <div class="bg-slate-900/90 border border-slate-800 p-5 rounded-xl shadow-lg">
+        <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Mean Time To Triage (MTTT)</div>
+        <div class="mt-2 flex items-baseline justify-between">
+          <span class="text-3xl font-extrabold text-sky-400">4.2 min</span>
+          <span class="text-xs text-emerald-400 font-medium font-mono">▼ 68% via SOAR</span>
+        </div>
+      </div>
+
+      <div class="bg-slate-900/90 border border-slate-800 p-5 rounded-xl shadow-lg">
+        <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Threat Intelligence</div>
+        <div class="mt-2 flex items-baseline justify-between">
+          <span class="text-2xl font-bold text-purple-400">AbuseIPDB</span>
+          <span class="text-xs text-emerald-400 font-mono">● Connected</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Incidents Table -->
+    <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-2xl">
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-sm">
+          <thead class="bg-slate-950 text-slate-400 text-xs uppercase font-mono border-b border-slate-800">
+            <tr>
+              <th class="py-3.5 px-4">Severity</th>
+              <th class="py-3.5 px-4">Incident Title</th>
+              <th class="py-3.5 px-4">MITRE ATT&amp;CK</th>
+              <th class="py-3.5 px-4">Offending Entity</th>
+              <th class="py-3.5 px-4">SOAR Action</th>
+              <th class="py-3.5 px-4 text-right">Details</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-800/60 font-mono text-xs">
+            <!-- Incident 1 -->
+            <tr onclick="openIncident('inc1')" class="hover:bg-slate-800/50 cursor-pointer transition">
+              <td class="py-4 px-4">
+                <span class="bg-red-950 text-red-400 border border-red-800 px-2 py-0.5 rounded font-bold">HIGH</span>
+              </td>
+              <td class="py-4 px-4 font-sans font-semibold text-white">
+                High-Volume RDP Brute Force Detection
+                <span class="block text-xs font-mono text-slate-400 mt-0.5">14 consecutive failed logons (Event 4625)</span>
+              </td>
+              <td class="py-4 px-4 text-sky-400">T1110.001 Brute Force</td>
+              <td class="py-4 px-4 text-slate-200">198.51.100.2 (Score 92%)</td>
+              <td class="py-4 px-4 text-emerald-400">Auto-Enriched &amp; Alerted</td>
+              <td class="py-4 px-4 text-right">
+                <button class="text-sky-400 hover:text-sky-300 font-sans font-semibold">Investigate →</button>
+              </td>
+            </tr>
+
+            <!-- Incident 2 -->
+            <tr onclick="openIncident('inc2')" class="hover:bg-slate-800/50 cursor-pointer transition">
+              <td class="py-4 px-4">
+                <span class="bg-red-950 text-red-400 border border-red-800 px-2 py-0.5 rounded font-bold">HIGH</span>
+              </td>
+              <td class="py-4 px-4 font-sans font-semibold text-white">
+                Ingress Tool Transfer via Certutil (LOLBAS)
+                <span class="block text-xs font-mono text-slate-400 mt-0.5">certutil.exe -urlcache -split (Sysmon Event 1)</span>
+              </td>
+              <td class="py-4 px-4 text-purple-400">T1105 Ingress Transfer</td>
+              <td class="py-4 px-4 text-slate-200">User: AdminUser (PID 4892)</td>
+              <td class="py-4 px-4 text-emerald-400">Hash Logged</td>
+              <td class="py-4 px-4 text-right">
+                <button class="text-sky-400 hover:text-sky-300 font-sans font-semibold">Investigate →</button>
+              </td>
+            </tr>
+
+            <!-- Incident 3 -->
+            <tr onclick="openIncident('inc3')" class="hover:bg-slate-800/50 cursor-pointer transition">
+              <td class="py-4 px-4">
+                <span class="bg-amber-950 text-amber-400 border border-amber-800 px-2 py-0.5 rounded font-bold">MED</span>
+              </td>
+              <td class="py-4 px-4 font-sans font-semibold text-white">
+                Unauthorized Local Administrator Account Creation
+                <span class="block text-xs font-mono text-slate-400 mt-0.5">User: SOCBackdoorUser escalated (Events 4720 &amp; 4732)</span>
+              </td>
+              <td class="py-4 px-4 text-amber-400">T1136.001 Local Account</td>
+              <td class="py-4 px-4 text-slate-200">Target: SOCBackdoorUser</td>
+              <td class="py-4 px-4 text-sky-400">Escalated to Tier 2</td>
+              <td class="py-4 px-4 text-right">
+                <button class="text-sky-400 hover:text-sky-300 font-sans font-semibold">Investigate →</button>
+              </td>
+            </tr>
+
+            <!-- Incident 4 -->
+            <tr onclick="openIncident('inc4')" class="hover:bg-slate-800/50 cursor-pointer transition">
+              <td class="py-4 px-4">
+                <span class="bg-red-950 text-red-400 border border-red-800 px-2 py-0.5 rounded font-bold">HIGH</span>
+              </td>
+              <td class="py-4 px-4 font-sans font-semibold text-white">
+                Suspicious Encoded / Hidden PowerShell Command
+                <span class="block text-xs font-mono text-slate-400 mt-0.5">flags: -enc -w hidden -ep bypass</span>
+              </td>
+              <td class="py-4 px-4 text-pink-400">T1027 Defense Evasion</td>
+              <td class="py-4 px-4 text-slate-200">powershell.exe</td>
+              <td class="py-4 px-4 text-slate-400">Closed (Remediated)</td>
+              <td class="py-4 px-4 text-right">
+                <button class="text-sky-400 hover:text-sky-300 font-sans font-semibold">Investigate →</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 2: Visual Screenshots Gallery -->
+  <section id="screenshots" class="py-12 bg-slate-950/60 border-y border-slate-800/80">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="mb-8">
+        <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+          <i class="fa-solid fa-images text-sky-400"></i> Evidence &amp; Visual Telemetry
+        </h2>
+        <p class="text-sm text-slate-400">Full visual evidence of Sentinel incidents, KQL query results, threat maps, and SOAR execution flows.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Screenshot 1 -->
+        <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-xl hover:border-sky-500/50 transition group">
+          <div class="p-4 border-b border-slate-800 flex justify-between items-center bg-slate-950">
+            <span class="font-semibold text-sm text-white">1. Microsoft Sentinel Incident Queue</span>
+            <span class="text-xs font-mono text-sky-400">Dashboard</span>
+          </div>
+          <a href="screenshots/01_sentinel_incident_dashboard.svg" target="_blank" class="block overflow-hidden">
+            <img src="screenshots/01_sentinel_incident_dashboard.svg" alt="Sentinel Incident Dashboard" class="w-full object-cover group-hover:scale-105 transition duration-300">
+          </a>
+        </div>
+
+        <!-- Screenshot 2 -->
+        <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-xl hover:border-sky-500/50 transition group">
+          <div class="p-4 border-b border-slate-800 flex justify-between items-center bg-slate-950">
+            <span class="font-semibold text-sm text-white">2. KQL Query Investigation &amp; Results</span>
+            <span class="text-xs font-mono text-amber-400">Log Analytics</span>
+          </div>
+          <a href="screenshots/02_kql_query_investigation.svg" target="_blank" class="block overflow-hidden">
+            <img src="screenshots/02_kql_query_investigation.svg" alt="KQL Query Investigation" class="w-full object-cover group-hover:scale-105 transition duration-300">
+          </a>
+        </div>
+
+        <!-- Screenshot 3 -->
+        <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-xl hover:border-sky-500/50 transition group">
+          <div class="p-4 border-b border-slate-800 flex justify-between items-center bg-slate-950">
+            <span class="font-semibold text-sm text-white">3. Global Threat Geolocation Workbook</span>
+            <span class="text-xs font-mono text-red-400">Azure Maps</span>
+          </div>
+          <a href="screenshots/03_threat_map_workbook.svg" target="_blank" class="block overflow-hidden">
+            <img src="screenshots/03_threat_map_workbook.svg" alt="Global Threat Map" class="w-full object-cover group-hover:scale-105 transition duration-300">
+          </a>
+        </div>
+
+        <!-- Screenshot 4 -->
+        <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-xl hover:border-sky-500/50 transition group">
+          <div class="p-4 border-b border-slate-800 flex justify-between items-center bg-slate-950">
+            <span class="font-semibold text-sm text-white">4. Logic App SOAR Automation Run</span>
+            <span class="text-xs font-mono text-emerald-400">Logic Apps</span>
+          </div>
+          <a href="screenshots/04_soar_logic_app_playbook.svg" target="_blank" class="block overflow-hidden">
+            <img src="screenshots/04_soar_logic_app_playbook.svg" alt="Logic App SOAR Automation" class="w-full object-cover group-hover:scale-105 transition duration-300">
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 3: Interactive KQL Detection Rules -->
+  <section id="detections" class="py-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="mb-6">
+      <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+        <i class="fa-solid fa-code text-sky-400"></i> Production KQL Analytics Rules
+      </h2>
+      <p class="text-sm text-slate-400">Inspect the exact detection engineering logic authored for Microsoft Sentinel.</p>
+    </div>
+
+    <!-- Rule Tabs -->
+    <div class="flex flex-wrap gap-2 mb-4 font-mono text-xs">
+      <button onclick="showKql('rdp')" id="tab-rdp" class="px-4 py-2 rounded-lg bg-sky-600 text-white font-bold transition">brute_force_rdp.kql</button>
+      <button onclick="showKql('certutil')" id="tab-certutil" class="px-4 py-2 rounded-lg bg-slate-800 text-slate-400 hover:text-white transition">lolbas_certutil.kql</button>
+      <button onclick="showKql('admin')" id="tab-admin" class="px-4 py-2 rounded-lg bg-slate-800 text-slate-400 hover:text-white transition">local_admin_creation.kql</button>
+      <button onclick="showKql('powershell')" id="tab-powershell" class="px-4 py-2 rounded-lg bg-slate-800 text-slate-400 hover:text-white transition">obfuscated_powershell.kql</button>
+    </div>
+
+    <!-- Code Display Box -->
+    <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-2xl relative">
+      <div class="bg-slate-950 px-4 py-3 border-b border-slate-800 flex justify-between items-center text-xs">
+        <span id="kql-title" class="font-mono text-sky-400 font-bold">T1110.001 - High-Volume RDP Brute Force Detection</span>
+        <button onclick="copyCode()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1 rounded text-xs font-mono transition flex items-center gap-1.5">
+          <i class="fa-regular fa-copy"></i> <span id="copy-btn-text">Copy KQL</span>
+        </button>
+      </div>
+      <pre class="p-6 font-mono text-xs sm:text-sm text-slate-300 overflow-x-auto leading-relaxed"><code id="kql-code">SecurityEvent
+| where TimeGenerated >= ago(1h)
+| where EventID == 4625 // An account failed to log on
+| where LogonType in (3, 10) // 3 = Network (SMB), 10 = RemoteInteractive (RDP)
+| where isnotempty(IpAddress) and IpAddress !in ("-", "127.0.0.1", "::1")
+| summarize 
+    FailedAttempts = count(),
+    StartTime = min(TimeGenerated),
+    EndTime = max(TimeGenerated),
+    TargetedAccounts = make_set(TargetAccount, 10),
+    SubStatusList = make_set(SubStatus, 5)
+    by Computer, IpAddress, bin(TimeGenerated, 5m)
+| where FailedAttempts >= 5
+| extend 
+    AccountCustomEntity = tostring(TargetedAccounts[0]),
+    IPCustomEntity = IpAddress,
+    HostCustomEntity = Computer
+| project StartTime, EndTime, HostCustomEntity, IPCustomEntity, AccountCustomEntity, FailedAttempts, TargetedAccounts, SubStatusList
+| sort by FailedAttempts desc</code></pre>
+    </div>
+  </section>
+
+  <!-- Section 4: Incident Investigation Report -->
+  <section id="investigation" class="py-12 bg-slate-950/60 border-t border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="mb-6">
+        <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+          <i class="fa-solid fa-file-shield text-sky-400"></i> Standardized SOC Incident Report
+        </h2>
+        <p class="text-sm text-slate-400">Demonstrating enterprise incident response documentation and root-cause analysis.</p>
+      </div>
+
+      <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 sm:p-8 space-y-6 text-sm text-slate-300">
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 pb-6 border-b border-slate-800 font-mono text-xs">
+          <div><span class="text-slate-500 block">INCIDENT ID</span> <span class="font-bold text-white">INC-20261021-001</span></div>
+          <div><span class="text-slate-500 block">SEVERITY</span> <span class="text-red-400 font-bold">HIGH</span></div>
+          <div><span class="text-slate-500 block">STATUS</span> <span class="text-emerald-400 font-bold">CLOSED (CONTAINED)</span></div>
+          <div><span class="text-slate-500 block">ATTACKER IP</span> <span class="text-amber-400 font-bold">198.51.100.2 (92% Abuse)</span></div>
+        </div>
+
+        <div>
+          <h3 class="font-bold text-white text-base mb-2">1. Executive Summary</h3>
+          <p class="leading-relaxed text-slate-400">
+            On October 21, 2026, Microsoft Sentinel alerted on anomalous brute-force authentication against <code class="text-sky-300">vm-target-endpoint</code>. Subsequent investigation confirmed successful credential guessing against account <code class="text-amber-300">AdminUser</code>, followed by secondary stage ingress via <code class="text-purple-300">certutil.exe</code> and local administrative persistence via rogue account <code class="text-red-300">SOCBackdoorUser</code>. Attacker was isolated, rogue account purged, and perimeter NSG rule enforced.
+          </p>
+        </div>
+
+        <div>
+          <h3 class="font-bold text-white text-base mb-2">2. Attack Chain Timeline (UTC)</h3>
+          <div class="space-y-2 font-mono text-xs text-slate-400">
+            <div class="flex items-start gap-4">
+              <span class="text-sky-400 font-bold w-20">09:10:15</span>
+              <span>WinSec Event 4625: 14 failed RDP authentication attempts from source 198.51.100.2.</span>
+            </div>
+            <div class="flex items-start gap-4">
+              <span class="text-amber-400 font-bold w-20">09:13:02</span>
+              <span>WinSec Event 4624: Successful RDP logon for user AdminUser from attacker IP.</span>
+            </div>
+            <div class="flex items-start gap-4">
+              <span class="text-red-400 font-bold w-20">09:15:40</span>
+              <span>Sysmon Event 1: certutil.exe -urlcache -split executed to fetch external binary.</span>
+            </div>
+            <div class="flex items-start gap-4">
+              <span class="text-purple-400 font-bold w-20">09:17:15</span>
+              <span>WinSec Event 4732: Rogue user SOCBackdoorUser added to local Administrators group.</span>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <h3 class="font-bold text-white text-base mb-2">3. Remediation &amp; Hardening Implemented</h3>
+          <ul class="list-disc list-inside space-y-1 text-slate-400">
+            <li><strong class="text-slate-200">Perimeter Containment:</strong> Added Azure NSG Inbound Deny Rule for 198.51.100.2.</li>
+            <li><strong class="text-slate-200">Identity Remediation:</strong> Forced password rotation for AdminUser and purged SOCBackdoorUser.</li>
+            <li><strong class="text-slate-200">Zero Trust Hardening:</strong> Disabled direct public RDP Port 3389; migrated access to Azure Bastion.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Modal for Incident Investigation -->
+  <div id="incident-modal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-2xl w-full p-6 shadow-2xl space-y-4">
+      <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+        <h3 id="modal-title" class="font-bold text-lg text-white">Incident Details</h3>
+        <button onclick="closeModal()" class="text-slate-400 hover:text-white text-xl">✕</button>
+      </div>
+      <div id="modal-body" class="text-sm text-slate-300 space-y-3 font-mono">
+        <!-- Injected via JS -->
+      </div>
+      <div class="pt-4 border-t border-slate-800 flex justify-end">
+        <button onclick="closeModal()" class="bg-slate-800 hover:bg-slate-700 text-white px-4 py-2 rounded-lg text-xs font-sans font-semibold">Close Modal</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="py-8 border-t border-slate-800 text-center text-xs text-slate-500 font-mono">
+    <p>Microsoft Sentinel Cloud SOC Lab • Developed by Venu • <a href="https://github.com/venu-3754/azure-sentinel-cloud-soc" class="text-sky-400 hover:underline">GitHub Repository</a></p>
+  </footer>
+
+  <script>
+    const kqlQueries = {
+      rdp: {
+        title: "T1110.001 - High-Volume RDP Brute Force Detection",
+        code: `SecurityEvent
+| where TimeGenerated >= ago(1h)
+| where EventID == 4625 // An account failed to log on
+| where LogonType in (3, 10) // 3 = Network (SMB), 10 = RemoteInteractive (RDP)
+| where isnotempty(IpAddress) and IpAddress !in ("-", "127.0.0.1", "::1")
+| summarize 
+    FailedAttempts = count(),
+    StartTime = min(TimeGenerated),
+    EndTime = max(TimeGenerated),
+    TargetedAccounts = make_set(TargetAccount, 10),
+    SubStatusList = make_set(SubStatus, 5)
+    by Computer, IpAddress, bin(TimeGenerated, 5m)
+| where FailedAttempts >= 5
+| extend 
+    AccountCustomEntity = tostring(TargetedAccounts[0]),
+    IPCustomEntity = IpAddress,
+    HostCustomEntity = Computer
+| project StartTime, EndTime, HostCustomEntity, IPCustomEntity, AccountCustomEntity, FailedAttempts, TargetedAccounts, SubStatusList
+| sort by FailedAttempts desc`
+      },
+      certutil: {
+        title: "T1105 / T1218 - Ingress Tool Transfer via Certutil (LOLBAS)",
+        code: `Event
+| where Source == "Microsoft-Windows-Sysmon" and EventID == 1
+| extend EventData = parse_xml(EventData)
+| extend 
+    CommandLine = tostring(EventData.DataItem.EventData.Data[10].["#text"]),
+    Image = tostring(EventData.DataItem.EventData.Data[4].["#text"]),
+    ParentImage = tostring(EventData.DataItem.EventData.Data[20].["#text"]),
+    User = tostring(EventData.DataItem.EventData.Data[11].["#text"]),
+    ProcessId = tostring(EventData.DataItem.EventData.Data[3].["#text"]),
+    Hashes = tostring(EventData.DataItem.EventData.Data[16].["#text"])
+| where Image endswith "certutil.exe"
+| where CommandLine has_any ("-urlcache", "-split", "http://", "https://", "ftp://")
+| project TimeGenerated, Computer, User, Image, CommandLine, ParentImage, ProcessId, Hashes
+| extend AccountCustomEntity = User, HostCustomEntity = Computer`
+      },
+      admin: {
+        title: "T1136.001 - Unauthorized Local Administrator Account Creation",
+        code: `SecurityEvent
+| where TimeGenerated >= ago(2h)
+| where EventID in (4720, 4728, 4732)
+// 4720: User account created
+// 4728: Member added to security group
+// 4732: Member added to local Administrators group
+| extend 
+    ActorAccount = SubjectUserName,
+    TargetUser = TargetUserName,
+    GroupModified = TargetSid
+| where TargetUser !in ("DefaultAccount", "WDAGUtilityAccount")
+| project TimeGenerated, Computer, EventID, Activity, ActorAccount, TargetUser, GroupModified
+| extend AccountCustomEntity = TargetUser, HostCustomEntity = Computer`
+      },
+      powershell: {
+        title: "T1027 - Suspicious Encoded / Hidden PowerShell Command Execution",
+        code: `Event
+| where Source == "Microsoft-Windows-Sysmon" and EventID == 1
+| extend EventData = parse_xml(EventData)
+| extend 
+    CommandLine = tostring(EventData.DataItem.EventData.Data[10].["#text"]),
+    Image = tostring(EventData.DataItem.EventData.Data[4].["#text"]),
+    ParentImage = tostring(EventData.DataItem.EventData.Data[20].["#text"]),
+    User = tostring(EventData.DataItem.EventData.Data[11].["#text"])
+| where Image endswith "powershell.exe" or Image endswith "pwsh.exe"
+| where (CommandLine has_any ("-enc", "-encodedcommand", "-e ") 
+    and CommandLine has_any ("-nop", "-noprofile", "-w hidden", "-ep bypass"))
+| project TimeGenerated, Computer, User, Image, CommandLine, ParentImage
+| extend AccountCustomEntity = User, HostCustomEntity = Computer`
+      }
+    };
+
+    function showKql(key) {
+      document.getElementById('kql-title').innerText = kqlQueries[key].title;
+      document.getElementById('kql-code').innerText = kqlQueries[key].code;
+      ['rdp', 'certutil', 'admin', 'powershell'].forEach(k => {
+        const btn = document.getElementById('tab-' + k);
+        if (k === key) {
+          btn.className = 'px-4 py-2 rounded-lg bg-sky-600 text-white font-bold transition';
+        } else {
+          btn.className = 'px-4 py-2 rounded-lg bg-slate-800 text-slate-400 hover:text-white transition';
+        }
+      });
+    }
+
+    function copyCode() {
+      const code = document.getElementById('kql-code').innerText;
+      navigator.clipboard.writeText(code).then(() => {
+        const btn = document.getElementById('copy-btn-text');
+        btn.innerText = 'Copied!';
+        setTimeout(() => btn.innerText = 'Copy KQL', 2000);
+      });
+    }
+
+    const incidentData = {
+      inc1: {
+        title: "INC-20261021-001: High-Volume RDP Brute Force",
+        body: `
+          <div class="bg-red-950/40 p-3 rounded border border-red-800 text-red-200">
+            <strong>Alert Trigger:</strong> 14 failed RDP authentication attempts from IP 198.51.100.2 within 5 minutes.
+          </div>
+          <div><strong>Attacker IP:</strong> 198.51.100.2 (ASN: DigitalOcean)</div>
+          <div><strong>AbuseIPDB Threat Score:</strong> <span class="text-red-400 font-bold">92%</span> (342 prior reports)</div>
+          <div><strong>Target Host:</strong> vm-target-endpoint (10.0.0.4)</div>
+          <div><strong>Targeted Accounts:</strong> ["AdminUser", "Administrator", "root"]</div>
+          <div class="bg-slate-950 p-3 rounded border border-slate-800 text-emerald-400 text-xs">
+            <strong>SOAR Playbook Result:</strong> Abuse score > 75% ➔ Automated notification dispatched to #soc-alerts channel + comment appended to incident.
+          </div>
+        `
+      },
+      inc2: {
+        title: "INC-20261021-002: Ingress Tool Transfer (Certutil LOLBAS)",
+        body: `
+          <div class="bg-purple-950/40 p-3 rounded border border-purple-800 text-purple-200">
+            <strong>Alert Trigger:</strong> certutil.exe spawned with -urlcache and -split flags to download remote content.
+          </div>
+          <div><strong>Process Lineage:</strong> cmd.exe (PID 2140) ➔ certutil.exe (PID 4892)</div>
+          <div><strong>User Context:</strong> AdminUser (Interactive Session)</div>
+          <div><strong>File Created:</strong> C:\\Users\\AdminUser\\AppData\\Local\\Temp\\simulated_payload.txt</div>
+          <div><strong>MITRE ATT&amp;CK:</strong> T1105 (Ingress Tool Transfer) &amp; T1218 (Proxy Execution)</div>
+        `
+      },
+      inc3: {
+        title: "INC-20261021-003: Unauthorized Local Admin Creation",
+        body: `
+          <div class="bg-amber-950/40 p-3 rounded border border-amber-800 text-amber-200">
+            <strong>Alert Trigger:</strong> Security Event 4720 (User Created) &amp; 4732 (Added to Administrators).
+          </div>
+          <div><strong>Target User:</strong> SOCBackdoorUser</div>
+          <div><strong>Actor Account:</strong> AdminUser</div>
+          <div><strong>Remediation:</strong> Account disabled and purged via 'net user SOCBackdoorUser /delete'.</div>
+        `
+      },
+      inc4: {
+        title: "INC-20261021-004: Suspicious Encoded PowerShell",
+        body: `
+          <div class="bg-red-950/40 p-3 rounded border border-red-800 text-red-200">
+            <strong>Alert Trigger:</strong> PowerShell executed with -EncodedCommand and -WindowStyle Hidden.
+          </div>
+          <div><strong>Command Argument:</strong> powershell.exe -NoP -W Hidden -Enc Vw...</div>
+          <div><strong>Decoded Payload:</strong> Write-Output 'SOC-Lab-Adversary-Simulation-Active'</div>
+          <div><strong>Status:</strong> Validated as simulation benign drill. Closed as expected test.</div>
+        `
+      }
+    };
+
+    function openIncident(id) {
+      document.getElementById('modal-title').innerText = incidentData[id].title;
+      document.getElementById('modal-body').innerHTML = incidentData[id].body;
+      document.getElementById('incident-modal').classList.remove('hidden');
+    }
+
+    function closeModal() {
+      document.getElementById('incident-modal').classList.add('hidden');
+    }
+  </script>
+</body>
+</html>

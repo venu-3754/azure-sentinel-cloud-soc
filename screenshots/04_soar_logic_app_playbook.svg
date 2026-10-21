@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 680" width="1200" height="680">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0b0f19" />
+      <stop offset="100%" stop-color="#111827" />
+    </linearGradient>
+    <linearGradient id="nodeHeader" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0284c7" />
+      <stop offset="100%" stop-color="#0369a1" />
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="680" fill="url(#bg)" />
+
+  <!-- Header -->
+  <rect width="1200" height="42" fill="#0f172a" />
+  <circle cx="24" cy="21" r="6" fill="#ef4444" />
+  <circle cx="44" cy="21" r="6" fill="#f59e0b" />
+  <circle cx="64" cy="21" r="6" fill="#10b981" />
+  <text x="95" y="26" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="600" fill="#94a3b8">Azure Logic Apps Designer — Playbook: Enrich-SentinelIncident-AbuseIPDB (SOAR)</text>
+  <rect x="1060" y="10" width="115" height="22" rx="4" fill="#10b981" />
+  <text x="1075" y="25" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="700" fill="#ffffff">RUN: SUCCEEDED</text>
+
+  <!-- Node 1: Sentinel Trigger -->
+  <rect x="420" y="65" width="360" height="70" rx="8" fill="#1e293b" stroke="#0284c7" stroke-width="1.5" />
+  <rect x="420" y="65" width="360" height="28" rx="8" fill="url(#nodeHeader)" />
+  <text x="440" y="84" font-family="sans-serif" font-size="12" font-weight="bold" fill="#ffffff">⚡ When a Microsoft Sentinel incident creation rule was triggered</text>
+  <text x="440" y="115" font-family="sans-serif" font-size="11" fill="#94a3b8">Subscription: Azure-Sub-01 | LAW: law-sentinel-soc</text>
+  <circle cx="760" cy="100" r="8" fill="#10b981" />
+  <text x="756" y="104" font-family="sans-serif" font-size="11" font-weight="bold" fill="#ffffff">✓</text>
+
+  <!-- Connector Line 1 -->
+  <line x1="600" y1="135" x2="600" y2="165" stroke="#0284c7" stroke-width="2" />
+  <polygon points="595,165 605,165 600,173" fill="#0284c7" />
+
+  <!-- Node 2: Extract IP Entities -->
+  <rect x="420" y="175" width="360" height="70" rx="8" fill="#1e293b" stroke="#334155" stroke-width="1.2" />
+  <rect x="420" y="175" width="360" height="28" rx="8" fill="#334155" />
+  <text x="440" y="194" font-family="sans-serif" font-size="12" font-weight="bold" fill="#ffffff">🔍 Entities - Get IPs (V2)</text>
+  <text x="440" y="225" font-family="sans-serif" font-size="11" fill="#94a3b8">Input: Entities list | Output: 1 IP (198.51.100.2)</text>
+  <circle cx="760" cy="210" r="8" fill="#10b981" />
+  <text x="756" y="214" font-family="sans-serif" font-size="11" font-weight="bold" fill="#ffffff">✓</text>
+
+  <!-- Connector Line 2 -->
+  <line x1="600" y1="245" x2="600" y2="275" stroke="#0284c7" stroke-width="2" />
+  <polygon points="595,275 605,275 600,283" fill="#0284c7" />
+
+  <!-- Node 3: For Each IP Loop & HTTP AbuseIPDB -->
+  <rect x="360" y="285" width="480" height="100" rx="8" fill="#0f172a" stroke="#a855f7" stroke-width="1.5" />
+  <rect x="360" y="285" width="480" height="28" rx="8" fill="#6b21a8" />
+  <text x="380" y="304" font-family="sans-serif" font-size="12" font-weight="bold" fill="#ffffff">🌐 HTTP - Query AbuseIPDB REST API (GET)</text>
+  <text x="380" y="333" font-family="monospace" font-size="11" fill="#cbd5e1">URI: https://api.abuseipdb.com/api/v2/check?ipAddress=198.51.100.2</text>
+  <text x="380" y="355" font-family="sans-serif" font-size="11" fill="#10b981">Status: 200 OK | Response: abuseConfidenceScore: 92% | Country: RU</text>
+  <text x="380" y="373" font-family="sans-serif" font-size="10" fill="#94a3b8">Execution time: 184ms</text>
+  <circle cx="820" cy="335" r="8" fill="#10b981" />
+  <text x="816" y="339" font-family="sans-serif" font-size="11" font-weight="bold" fill="#ffffff">✓</text>
+
+  <!-- Connector Line 3 -->
+  <line x1="600" y1="385" x2="600" y2="415" stroke="#0284c7" stroke-width="2" />
+  <polygon points="595,415 605,415 600,423" fill="#0284c7" />
+
+  <!-- Node 4: Condition (Is Abuse Score >= 75%) -->
+  <rect x="420" y="425" width="360" height="60" rx="8" fill="#1e293b" stroke="#f59e0b" stroke-width="1.5" />
+  <text x="450" y="450" font-family="sans-serif" font-size="12" font-weight="bold" fill="#fcd34d">⚖️ Condition: abuseConfidenceScore is greater than or equal to 75</text>
+  <text x="450" y="470" font-family="sans-serif" font-size="11" fill="#10b981">Evaluation: TRUE (Score 92 >= 75)</text>
+
+  <!-- Split Branch Lines -->
+  <line x1="500" y1="485" x2="300" y2="520" stroke="#10b981" stroke-width="2" />
+  <polygon points="295,520 305,520 300,528" fill="#10b981" />
+
+  <line x1="700" y1="485" x2="900" y2="520" stroke="#38bdf8" stroke-width="2" />
+  <polygon points="895,520 905,520 900,528" fill="#38bdf8" />
+
+  <!-- Action 5A: Add Comment to Sentinel Incident -->
+  <rect x="120" y="530" width="360" height="115" rx="8" fill="#1e293b" stroke="#10b981" stroke-width="1.5" />
+  <rect x="120" y="530" width="360" height="26" rx="8" fill="#15803d" />
+  <text x="135" y="548" font-family="sans-serif" font-size="12" font-weight="bold" fill="#ffffff">📝 Add comment to incident (V3)</text>
+  <text x="135" y="575" font-family="sans-serif" font-size="11" fill="#f8fafc">Incident ID: INC-20261021-001</text>
+  <text x="135" y="595" font-family="monospace" font-size="10" fill="#86efac">Comment: "🚨 HIGH RISK IP DETECTED (Score: 92%)</text>
+  <text x="135" y="612" font-family="monospace" font-size="10" fill="#86efac">ISP: BadActor ISP | Total Reports: 342"</text>
+  <text x="135" y="630" font-family="sans-serif" font-size="10" fill="#94a3b8">Status: Updated in Sentinel Incident Queue</text>
+
+  <!-- Action 5B: Post Card to Teams / Discord SOC Channel -->
+  <rect x="720" y="530" width="360" height="115" rx="8" fill="#1e293b" stroke="#38bdf8" stroke-width="1.5" />
+  <rect x="720" y="530" width="360" height="26" rx="8" fill="#0369a1" />
+  <text x="735" y="548" font-family="sans-serif" font-size="12" font-weight="bold" fill="#ffffff">📢 Post Adaptive Card to SOC Teams Channel</text>
+  <text x="735" y="575" font-family="sans-serif" font-size="11" fill="#f8fafc">Channel: #soc-incident-alerts</text>
+  <text x="735" y="595" font-family="monospace" font-size="10" fill="#7dd3fc">Card: [High-Priority Alert] RDP Brute Force</text>
+  <text x="735" y="612" font-family="monospace" font-size="10" fill="#7dd3fc">Offending IP: 198.51.100.2 | Action: Block NSG</text>
+  <text x="735" y="630" font-family="sans-serif" font-size="10" fill="#10b981">Delivered to On-Call Analyst</text>
+</svg>

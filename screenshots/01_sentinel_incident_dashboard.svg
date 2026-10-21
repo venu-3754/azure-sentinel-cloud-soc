@@ -1,0 +1,126 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 680" width="1200" height="680">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0b0f19" />
+      <stop offset="100%" stop-color="#111827" />
+    </linearGradient>
+    <linearGradient id="cardBg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1f2937" />
+      <stop offset="100%" stop-color="#111827" />
+    </linearGradient>
+    <linearGradient id="azureBlue" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0078d4" />
+      <stop offset="100%" stop-color="#00b4d8" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="680" fill="url(#bg)" />
+
+  <!-- Window Header -->
+  <rect width="1200" height="42" fill="#0f172a" />
+  <circle cx="24" cy="21" r="6" fill="#ef4444" />
+  <circle cx="44" cy="21" r="6" fill="#f59e0b" />
+  <circle cx="64" cy="21" r="6" fill="#10b981" />
+  <text x="95" y="26" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="600" fill="#94a3b8">Microsoft Sentinel — Incidents Overview | Workspace: law-sentinel-soc</text>
+  <rect x="1060" y="10" width="115" height="22" rx="4" fill="#0284c7" />
+  <text x="1075" y="25" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="700" fill="#ffffff">LIVE MONITOR</text>
+
+  <!-- Top Metrics KPI Cards -->
+  <!-- Card 1 -->
+  <rect x="30" y="65" width="265" height="90" rx="8" fill="url(#cardBg)" stroke="#374151" stroke-width="1" />
+  <text x="48" y="92" font-family="sans-serif" font-size="12" fill="#9ca3af" font-weight="600">TOTAL INCIDENTS (24H)</text>
+  <text x="48" y="132" font-family="sans-serif" font-size="32" fill="#ffffff" font-weight="bold">18</text>
+  <text x="96" y="130" font-family="sans-serif" font-size="12" fill="#10b981">▲ 4 new today</text>
+
+  <!-- Card 2 -->
+  <rect x="320" y="65" width="265" height="90" rx="8" fill="url(#cardBg)" stroke="#ef4444" stroke-width="1" />
+  <text x="338" y="92" font-family="sans-serif" font-size="12" fill="#fca5a5" font-weight="600">HIGH SEVERITY ALERTS</text>
+  <text x="338" y="132" font-family="sans-serif" font-size="32" fill="#ef4444" font-weight="bold">3</text>
+  <text x="375" y="130" font-family="sans-serif" font-size="12" fill="#ef4444">Requires immediate action</text>
+
+  <!-- Card 3 -->
+  <rect x="610" y="65" width="265" height="90" rx="8" fill="url(#cardBg)" stroke="#374151" stroke-width="1" />
+  <text x="628" y="92" font-family="sans-serif" font-size="12" fill="#9ca3af" font-weight="600">MEAN TIME TO TRIAGE (MTTT)</text>
+  <text x="628" y="132" font-family="sans-serif" font-size="32" fill="#38bdf8" font-weight="bold">4.2m</text>
+  <text x="715" y="130" font-family="sans-serif" font-size="12" fill="#10b981">▼ 68% (SOAR active)</text>
+
+  <!-- Card 4 -->
+  <rect x="900" y="65" width="270" height="90" rx="8" fill="url(#cardBg)" stroke="#374151" stroke-width="1" />
+  <text x="918" y="92" font-family="sans-serif" font-size="12" fill="#9ca3af" font-weight="600">THREAT ENRICHMENT</text>
+  <text x="918" y="132" font-family="sans-serif" font-size="30" fill="#a855f7" font-weight="bold">AbuseIPDB</text>
+  <text x="1080" y="130" font-family="sans-serif" font-size="12" fill="#10b981">● Connected</text>
+
+  <!-- Incidents Table Header -->
+  <rect x="30" y="180" width="1140" height="40" rx="6" fill="#1e293b" />
+  <text x="50" y="205" font-family="sans-serif" font-size="12" font-weight="bold" fill="#94a3b8">SEVERITY</text>
+  <text x="140" y="205" font-family="sans-serif" font-size="12" font-weight="bold" fill="#94a3b8">INCIDENT TITLE</text>
+  <text x="520" y="205" font-family="sans-serif" font-size="12" font-weight="bold" fill="#94a3b8">STATUS</text>
+  <text x="640" y="205" font-family="sans-serif" font-size="12" font-weight="bold" fill="#94a3b8">MITRE ATT&amp;CK</text>
+  <text x="830" y="205" font-family="sans-serif" font-size="12" font-weight="bold" fill="#94a3b8">ENTITIES</text>
+  <text x="1050" y="205" font-family="sans-serif" font-size="12" font-weight="bold" fill="#94a3b8">TIME DETECTED</text>
+
+  <!-- Row 1: High Severity (Brute Force) -->
+  <rect x="30" y="230" width="1140" height="60" rx="6" fill="#1e293b" fill-opacity="0.5" stroke="#ef4444" stroke-width="0.8" />
+  <rect x="46" y="247" width="56" height="24" rx="4" fill="#dc2626" />
+  <text x="57" y="263" font-family="sans-serif" font-size="11" font-weight="bold" fill="#ffffff">HIGH</text>
+  <text x="140" y="258" font-family="sans-serif" font-size="13" font-weight="bold" fill="#f87171">High-Volume RDP Brute Force Detection</text>
+  <text x="140" y="275" font-family="monospace" font-size="11" fill="#94a3b8">Rule: brute_force_rdp.kql | 14 failed attempts</text>
+  <rect x="520" y="248" width="65" height="22" rx="4" fill="#7f1d1d" />
+  <text x="532" y="263" font-family="sans-serif" font-size="11" fill="#fca5a5" font-weight="600">Active</text>
+  <rect x="640" y="248" width="140" height="22" rx="4" fill="#0f172a" stroke="#38bdf8" stroke-width="0.7" />
+  <text x="650" y="263" font-family="sans-serif" font-size="11" fill="#38bdf8">T1110.001 Brute Force</text>
+  <text x="830" y="260" font-family="monospace" font-size="11" fill="#e2e8f0">IP: 198.51.100.2 (Score 92%)</text>
+  <text x="830" y="276" font-family="sans-serif" font-size="10" fill="#64748b">Host: vm-target-endpoint</text>
+  <text x="1050" y="265" font-family="sans-serif" font-size="11" fill="#94a3b8">Just now</text>
+
+  <!-- Row 2: High Severity (Certutil LOLBAS) -->
+  <rect x="30" y="300" width="1140" height="60" rx="6" fill="#1e293b" fill-opacity="0.3" stroke="#334155" stroke-width="0.8" />
+  <rect x="46" y="317" width="56" height="24" rx="4" fill="#dc2626" />
+  <text x="57" y="333" font-family="sans-serif" font-size="11" font-weight="bold" fill="#ffffff">HIGH</text>
+  <text x="140" y="328" font-family="sans-serif" font-size="13" font-weight="bold" fill="#f87171">Ingress Tool Transfer via Certutil (LOLBAS)</text>
+  <text x="140" y="345" font-family="monospace" font-size="11" fill="#94a3b8">Sysmon Event ID 1 | certutil.exe -urlcache -split</text>
+  <rect x="520" y="318" width="85" height="22" rx="4" fill="#1e3a5f" />
+  <text x="529" y="333" font-family="sans-serif" font-size="11" fill="#93c5fd" font-weight="600">Investigating</text>
+  <rect x="640" y="318" width="150" height="22" rx="4" fill="#0f172a" stroke="#a855f7" stroke-width="0.7" />
+  <text x="650" y="333" font-family="sans-serif" font-size="11" fill="#c084fc">T1105 Ingress Transfer</text>
+  <text x="830" y="330" font-family="monospace" font-size="11" fill="#e2e8f0">Account: AdminUser</text>
+  <text x="830" y="346" font-family="sans-serif" font-size="10" fill="#64748b">PID: 4892 | Parent: cmd.exe</text>
+  <text x="1050" y="335" font-family="sans-serif" font-size="11" fill="#94a3b8">12 mins ago</text>
+
+  <!-- Row 3: Medium Severity (Local Admin Creation) -->
+  <rect x="30" y="370" width="1140" height="60" rx="6" fill="#1e293b" fill-opacity="0.3" stroke="#334155" stroke-width="0.8" />
+  <rect x="46" y="387" width="56" height="24" rx="4" fill="#d97706" />
+  <text x="54" y="403" font-family="sans-serif" font-size="11" font-weight="bold" fill="#ffffff">MED</text>
+  <text x="140" y="398" font-family="sans-serif" font-size="13" font-weight="bold" fill="#fbbf24">Unauthorized Local Administrator Account Creation</text>
+  <text x="140" y="415" font-family="monospace" font-size="11" fill="#94a3b8">Security Event 4720 &amp; 4732 | User: SOCBackdoorUser</text>
+  <rect x="520" y="388" width="85" height="22" rx="4" fill="#1e3a5f" />
+  <text x="529" y="403" font-family="sans-serif" font-size="11" fill="#93c5fd" font-weight="600">Investigating</text>
+  <rect x="640" y="388" width="165" height="22" rx="4" fill="#0f172a" stroke="#f59e0b" stroke-width="0.7" />
+  <text x="650" y="403" font-family="sans-serif" font-size="11" fill="#fcd34d">T1136.001 Create Account</text>
+  <text x="830" y="400" font-family="monospace" font-size="11" fill="#e2e8f0">Target: SOCBackdoorUser</text>
+  <text x="830" y="416" font-family="sans-serif" font-size="10" fill="#64748b">Actor: AdminUser</text>
+  <text x="1050" y="405" font-family="sans-serif" font-size="11" fill="#94a3b8">26 mins ago</text>
+
+  <!-- Row 4: High Severity (Encoded PowerShell) -->
+  <rect x="30" y="440" width="1140" height="60" rx="6" fill="#1e293b" fill-opacity="0.3" stroke="#334155" stroke-width="0.8" />
+  <rect x="46" y="457" width="56" height="24" rx="4" fill="#dc2626" />
+  <text x="57" y="473" font-family="sans-serif" font-size="11" font-weight="bold" fill="#ffffff">HIGH</text>
+  <text x="140" y="468" font-family="sans-serif" font-size="13" font-weight="bold" fill="#f87171">Suspicious Encoded / Hidden PowerShell Command</text>
+  <text x="140" y="485" font-family="monospace" font-size="11" fill="#94a3b8">Sysmon Event 1 | flags: -enc -w hidden -ep bypass</text>
+  <rect x="520" y="458" width="65" height="22" rx="4" fill="#14532d" />
+  <text x="532" y="473" font-family="sans-serif" font-size="11" fill="#86efac" font-weight="600">Closed</text>
+  <rect x="640" y="458" width="150" height="22" rx="4" fill="#0f172a" stroke="#ec4899" stroke-width="0.7" />
+  <text x="650" y="473" font-family="sans-serif" font-size="11" fill="#f472b6">T1027 Defense Evasion</text>
+  <text x="830" y="470" font-family="monospace" font-size="11" fill="#e2e8f0">powershell.exe -Enc Vw...</text>
+  <text x="830" y="486" font-family="sans-serif" font-size="10" fill="#64748b">Host: vm-target-endpoint</text>
+  <text x="1050" y="475" font-family="sans-serif" font-size="11" fill="#94a3b8">1 hour ago</text>
+
+  <!-- Bottom Panel: Incident Detail Triage Preview -->
+  <rect x="30" y="520" width="1140" height="135" rx="8" fill="#111827" stroke="#0284c7" stroke-width="1.2" />
+  <text x="50" y="546" font-family="sans-serif" font-size="13" font-weight="bold" fill="#38bdf8">⚡ SOAR Automated Playbook Execution Report: INC-20261021-001</text>
+  <rect x="50" y="560" width="1100" height="80" rx="4" fill="#0b0f19" />
+  <text x="65" y="582" font-family="monospace" font-size="12" fill="#10b981">✓ Trigger: Sentinel Incident Created ➔ Entities Parsed: [IP: 198.51.100.2]</text>
+  <text x="65" y="602" font-family="monospace" font-size="12" fill="#38bdf8">✓ AbuseIPDB API Query: 200 OK | Abuse Score: 92% | Country: RU | Reports: 342 | ISP: BadActor Network</text>
+  <text x="65" y="622" font-family="monospace" font-size="12" fill="#f59e0b">✓ Action Taken: Added automated triage note to Incident #1001 &amp; sent High-Priority card to #soc-alerts</text>
+</svg>

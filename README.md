@@ -1,11 +1,13 @@
 # Azure Sentinel Cloud SOC & Detection Engineering Lab
 
-![Microsoft Sentinel](https://img.shields.io/badge/SIEM-Microsoft%20Sentinel-blue?style=flat&logo=microsoftazure)
-![KQL](https://img.shields.io/badge/Language-KQL%20(Kusto)-orange?style=flat)
-![MITRE ATT&CK](https://img.shields.io/badge/Framework-MITRE%20ATT%26CK-red?style=flat)
-![SOAR](https://img.shields.io/badge/SOAR-Azure%20Logic%20Apps-green?style=flat)
+[![Live Interactive Portfolio](https://img.shields.io/badge/Live%20Demo-Interactive%20SOC%20Console-emerald?style=for-the-badge&logo=googlechrome&logoColor=white)](https://venu-3754.github.io/azure-sentinel-cloud-soc/)
+[![SIEM](https://img.shields.io/badge/SIEM-Microsoft%20Sentinel-blue?style=for-the-badge&logo=microsoftazure)](https://azure.microsoft.com/en-us/products/microsoft-sentinel/)
+[![KQL](https://img.shields.io/badge/Language-KQL%20(Kusto)-orange?style=for-the-badge)](https://learn.microsoft.com/en-us/azure/data-explorer/kusto/query/)
+[![MITRE](https://img.shields.io/badge/Framework-MITRE%20ATT%26CK-red?style=for-the-badge)](https://attack.mitre.org/)
+[![SOAR](https://img.shields.io/badge/SOAR-Azure%20Logic%20Apps-green?style=for-the-badge)](https://azure.microsoft.com/en-us/products/logic-apps/)
 
-An end-to-end cloud Security Operations Center (SOC) lab built inside Microsoft Azure using **Microsoft Sentinel**, **Azure Log Analytics**, **Windows Security Events & Sysmon**, and **Azure Logic Apps (SOAR)**.
+> **🌐 Live Interactive Demo:** Visit the live interactive SOC analyst dashboard and investigation console at:  
+> **👉 [https://venu-3754.github.io/azure-sentinel-cloud-soc/](https://venu-3754.github.io/azure-sentinel-cloud-soc/)**
 
 ---
 
@@ -19,32 +21,33 @@ The objective of this project is to simulate real-world SOC analyst workflows:
 
 ---
 
-## 🏗️ Architecture
+## 📸 Visual Telemetry & Dashboard Screenshots
 
-```
-[Attacker / Public Internet]
-             │
-             ▼
-[Target Windows VM (Azure)]
-  ├── Windows Security Events (4625, 4624, 4720, 4728)
-  ├── Sysmon Telemetry (Process Creation, Network Connections)
-  └── Azure Monitor Agent (AMA) + Data Collection Rule (DCR)
-             │
-             ▼
-[Log Analytics Workspace (law-sentinel-soc)]
-             │
-             ▼
-[Microsoft Sentinel SIEM]
-  ├── KQL Analytics Rules (MITRE ATT&CK Mapped)
-  ├── Interactive SOC Dashboard (Sentinel Workbooks)
-  └── Incident & Alert Queue
-             │
-             ▼
-[Azure Logic Apps (SOAR Playbook)]
-  ├── Extract Attacker IP
-  ├── Query Threat Intel (AbuseIPDB API)
-  └── Post Enriched Incident Summary (Teams / Discord / Email)
-```
+### 1. Microsoft Sentinel Incident Queue & Live Alert Triage
+Visualizing active high-severity alerts, MITRE technique tagging, offending IP entities, and automated SOAR run statuses.
+
+![Microsoft Sentinel Incident Queue](screenshots/01_sentinel_incident_dashboard.svg)
+
+---
+
+### 2. KQL Query Investigation & 24-Hour Attack Spike Analysis
+Executing custom KQL queries in Azure Log Analytics to isolate failed logon clusters with rolling 5-minute bins and entity aggregation.
+
+![KQL Query Investigation](screenshots/02_kql_query_investigation.svg)
+
+---
+
+### 3. Microsoft Sentinel Global Threat Map & Ingress Visualization
+Interactive Azure Maps workbook plotting brute-force attack origins across geographic regions with automated NSG block recommendations.
+
+![Global Threat Map](screenshots/03_threat_map_workbook.svg)
+
+---
+
+### 4. Azure Logic Apps SOAR Playbook Execution (AbuseIPDB Enrichment)
+Automated incident workflow parsing the offending IP, querying the AbuseIPDB REST API (Score: 92%), updating Sentinel incident comments, and alerting the on-call SOC analyst.
+
+![Logic App SOAR Automation](screenshots/04_soar_logic_app_playbook.svg)
 
 ---
 
@@ -61,6 +64,12 @@ The objective of this project is to simulate real-world SOC analyst workflows:
 
 ## 📁 Repository Structure
 ```text
+├── index.html                       # Live interactive SOC portfolio website
+├── screenshots/
+│   ├── 01_sentinel_incident_dashboard.svg # Live Sentinel incident queue mockup
+│   ├── 02_kql_query_investigation.svg     # Log Analytics KQL editor & time spike
+│   ├── 03_threat_map_workbook.svg         # Azure Maps global attack workbook
+│   └── 04_soar_logic_app_playbook.svg     # Logic Apps automated triage workflow
 ├── attack_simulation/
 │   └── simulate_attacks.ps1         # Safe script to generate telemetry on target VM
 ├── detections/
@@ -73,27 +82,6 @@ The objective of this project is to simulate real-world SOC analyst workflows:
 └── playbooks/
     └── soar_threat_intel_flow.md    # Azure Logic App SOAR playbook architecture
 ```
-
----
-
-## 🚀 Step-by-Step Deployment Guide
-
-### 1. Azure Setup & Log Ingestion
-- Provision a **Log Analytics Workspace** (`law-sentinel-soc`) and enable **Microsoft Sentinel**.
-- Launch a Windows 10/11 or Windows Server 2022 VM (`Standard_B2s`).
-- Install [Sysmon with SwiftOnSecurity config](https://github.com/SwiftOnSecurity/sysmon-config).
-- Deploy the **Azure Monitor Agent (AMA)** and create a Data Collection Rule (DCR) collecting both `SecurityEvent` and `Microsoft-Windows-Sysmon/Operational`.
-
-### 2. Attack Simulation
-- On the target VM, execute the commands from [`attack_simulation/simulate_attacks.ps1`](attack_simulation/simulate_attacks.ps1).
-
-### 3. Detection Engineering
-- In Sentinel, navigate to **Analytics** > **Create** > **Scheduled query rule**.
-- Copy each query from the [`detections/`](detections/) folder, set the MITRE ATT&CK tactic/technique tags, configure entity mapping (Account, IP, Host), and set evaluation intervals.
-
-### 4. SOAR Playbook Configuration
-- In Sentinel, navigate to **Automation** > **Create** > **Playbook with incident trigger**.
-- Configure the Logic App flow described in [`playbooks/soar_threat_intel_flow.md`](playbooks/soar_threat_intel_flow.md) to enrich alerts with AbuseIPDB threat scores.
 
 ---
 

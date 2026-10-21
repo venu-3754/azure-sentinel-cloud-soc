@@ -1,0 +1,119 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 680" width="1200" height="680">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0b0f19" />
+      <stop offset="100%" stop-color="#111827" />
+    </linearGradient>
+    <radialGradient id="pulse1">
+      <stop offset="0%" stop-color="#ef4444" stop-opacity="0.9" />
+      <stop offset="50%" stop-color="#ef4444" stop-opacity="0.4" />
+      <stop offset="100%" stop-color="#ef4444" stop-opacity="0" />
+    </radialGradient>
+    <radialGradient id="pulse2">
+      <stop offset="0%" stop-color="#f59e0b" stop-opacity="0.8" />
+      <stop offset="100%" stop-color="#f59e0b" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+
+  <rect width="1200" height="680" fill="url(#bg)" />
+
+  <!-- Header -->
+  <rect width="1200" height="42" fill="#0f172a" />
+  <circle cx="24" cy="21" r="6" fill="#ef4444" />
+  <circle cx="44" cy="21" r="6" fill="#f59e0b" />
+  <circle cx="64" cy="21" r="6" fill="#10b981" />
+  <text x="95" y="26" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="600" fill="#94a3b8">Microsoft Sentinel Workbooks — Global Threat &amp; Ingress Map | SOC Operations</text>
+
+  <!-- Left Side: World Map Visualizer -->
+  <rect x="25" y="65" width="820" height="585" rx="8" fill="#0f172a" stroke="#1e293b" stroke-width="1.5" />
+  <text x="45" y="95" font-family="sans-serif" font-size="14" font-weight="bold" fill="#f8fafc">GEOGRAPHICAL ATTACK ORIGINS (AZURE MAPS PROJECTION)</text>
+  <text x="45" y="115" font-family="sans-serif" font-size="11" fill="#64748b">Correlating Public IPs from Event ID 4625 via GeoIP intelligence</text>
+
+  <!-- Stylized World Map Continents Outline (SVG Paths) -->
+  <g fill="#1e293b" stroke="#334155" stroke-width="0.8">
+    <!-- North America -->
+    <path d="M 80,180 Q 150,140 250,150 Q 280,200 240,280 Q 200,320 180,300 Q 140,280 100,240 Z" />
+    <!-- South America -->
+    <path d="M 220,330 Q 280,350 270,440 Q 230,520 200,480 Q 190,400 220,330 Z" />
+    <!-- Europe -->
+    <path d="M 400,160 Q 480,140 510,180 Q 480,240 430,230 Q 390,200 400,160 Z" />
+    <!-- Africa -->
+    <path d="M 420,260 Q 510,260 520,360 Q 480,460 430,420 Q 400,340 420,260 Z" />
+    <!-- Asia -->
+    <path d="M 520,150 Q 680,130 760,200 Q 720,300 620,280 Q 560,220 520,150 Z" />
+    <!-- Australia -->
+    <path d="M 680,420 Q 760,400 780,470 Q 720,510 680,460 Z" />
+  </g>
+
+  <!-- Threat Origin Nodes / Heat Pulses -->
+  <!-- Node 1: Eastern Europe / Russia (Primary Attacker) -->
+  <circle cx="515" cy="185" r="32" fill="url(#pulse1)" />
+  <circle cx="515" cy="185" r="7" fill="#ef4444" stroke="#ffffff" stroke-width="2" />
+  <rect x="525" y="165" width="130" height="42" rx="4" fill="#030712" stroke="#ef4444" stroke-width="1" />
+  <text x="535" y="182" font-family="monospace" font-size="11" font-weight="bold" fill="#f87171">198.51.100.2</text>
+  <text x="535" y="197" font-family="sans-serif" font-size="10" fill="#ffffff">14 Hits | Abuse: 92%</text>
+
+  <!-- Node 2: Asia Pacific (Second Attacker) -->
+  <circle cx="670" cy="240" r="22" fill="url(#pulse2)" />
+  <circle cx="670" cy="240" r="6" fill="#f59e0b" stroke="#ffffff" stroke-width="1.5" />
+  <rect x="680" y="225" width="120" height="40" rx="4" fill="#030712" stroke="#f59e0b" stroke-width="1" />
+  <text x="688" y="242" font-family="monospace" font-size="11" font-weight="bold" fill="#fbbf24">203.0.113.88</text>
+  <text x="688" y="256" font-family="sans-serif" font-size="10" fill="#ffffff">8 Hits | Abuse: 74%</text>
+
+  <!-- Node 3: North America (Third Attacker) -->
+  <circle cx="210" cy="220" r="18" fill="url(#pulse2)" />
+  <circle cx="210" cy="220" r="5" fill="#f59e0b" stroke="#ffffff" stroke-width="1.5" />
+
+  <!-- Target Endpoint Node (Washington / East US) -->
+  <circle cx="220" cy="235" r="7" fill="#0284c7" stroke="#38bdf8" stroke-width="2" />
+  <text x="140" y="260" font-family="sans-serif" font-size="10" font-weight="bold" fill="#38bdf8">Target: vm-target (East US)</text>
+
+  <!-- Attack Vectors Connecting Target (Arc lines) -->
+  <path d="M 515,185 Q 360,110 220,235" fill="none" stroke="#ef4444" stroke-width="2" stroke-dasharray="5,5" />
+  <path d="M 670,240 Q 440,160 220,235" fill="none" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="4,4" />
+
+  <!-- Right Side: Top Attackers & Breakdown -->
+  <rect x="865" y="65" width="310" height="585" rx="8" fill="#0f172a" stroke="#1e293b" stroke-width="1.5" />
+  <text x="885" y="95" font-family="sans-serif" font-size="13" font-weight="bold" fill="#f8fafc">TOP ATTACK ORIGIN COUNTRIES</text>
+
+  <!-- Country 1 -->
+  <rect x="885" y="115" width="270" height="55" rx="6" fill="#1e293b" />
+  <text x="898" y="137" font-family="sans-serif" font-size="12" font-weight="bold" fill="#ffffff">Russia (RU)</text>
+  <text x="1100" y="137" font-family="sans-serif" font-size="12" font-weight="bold" fill="#ef4444">18 hits</text>
+  <rect x="898" y="148" width="244" height="6" rx="3" fill="#334155" />
+  <rect x="898" y="148" width="180" height="6" rx="3" fill="#ef4444" />
+
+  <!-- Country 2 -->
+  <rect x="885" y="180" width="270" height="55" rx="6" fill="#1e293b" />
+  <text x="898" y="202" font-family="sans-serif" font-size="12" font-weight="bold" fill="#ffffff">China (CN)</text>
+  <text x="1105" y="202" font-family="sans-serif" font-size="12" font-weight="bold" fill="#f59e0b">9 hits</text>
+  <rect x="898" y="213" width="244" height="6" rx="3" fill="#334155" />
+  <rect x="898" y="213" width="100" height="6" rx="3" fill="#f59e0b" />
+
+  <!-- Country 3 -->
+  <rect x="885" y="245" width="270" height="55" rx="6" fill="#1e293b" />
+  <text x="898" y="267" font-family="sans-serif" font-size="12" font-weight="bold" fill="#ffffff">United States (US)</text>
+  <text x="1105" y="267" font-family="sans-serif" font-size="12" font-weight="bold" fill="#10b981">4 hits</text>
+  <rect x="898" y="278" width="244" height="6" rx="3" fill="#334155" />
+  <rect x="898" y="278" width="45" height="6" rx="3" fill="#10b981" />
+
+  <!-- Targeted Protocol Breakdown -->
+  <text x="885" y="335" font-family="sans-serif" font-size="13" font-weight="bold" fill="#f8fafc">ATTACKED INBOUND PORTS</text>
+  <rect x="885" y="350" width="270" height="85" rx="6" fill="#1e293b" />
+  <text x="900" y="375" font-family="monospace" font-size="12" fill="#38bdf8">Port 3389 (RDP):</text>
+  <text x="1090" y="375" font-family="sans-serif" font-size="12" font-weight="bold" fill="#ef4444">82%</text>
+  <text x="900" y="400" font-family="monospace" font-size="12" fill="#38bdf8">Port 445 (SMB):</text>
+  <text x="1090" y="400" font-family="sans-serif" font-size="12" font-weight="bold" fill="#f59e0b">14%</text>
+  <text x="900" y="423" font-family="monospace" font-size="12" fill="#38bdf8">Port 22 (SSH):</text>
+  <text x="1090" y="423" font-family="sans-serif" font-size="12" font-weight="bold" fill="#94a3b8">4%</text>
+
+  <!-- Analyst Recommendation Box -->
+  <rect x="885" y="455" width="270" height="175" rx="6" fill="#030712" stroke="#0284c7" stroke-width="1" />
+  <text x="900" y="480" font-family="sans-serif" font-size="12" font-weight="bold" fill="#38bdf8">🛡️ SOC Triage Recommendation</text>
+  <text x="900" y="505" font-family="sans-serif" font-size="11" fill="#cbd5e1">• High cluster from RU ASN 49505</text>
+  <text x="900" y="525" font-family="sans-serif" font-size="11" fill="#cbd5e1">• Automated brute-force signature detected</text>
+  <text x="900" y="545" font-family="sans-serif" font-size="11" fill="#cbd5e1">• Inbound NSG Deny rule deployed</text>
+  <text x="900" y="565" font-family="sans-serif" font-size="11" fill="#cbd5e1">• Azure Bastion migration initiated</text>
+  <rect x="900" y="585" width="240" height="30" rx="4" fill="#0284c7" />
+  <text x="935" y="605" font-family="sans-serif" font-size="11" font-weight="bold" fill="#ffffff">Automated Block Applied</text>
+</svg>
